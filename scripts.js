@@ -23,7 +23,7 @@ function fetchFeaturedMovie() {
         url: `https://api.themoviedb.org/3/movie/popular?api_key=${apiKey}&page=1`,
         method: 'GET',
         success: function(response) {
-            const movie = response.results[0]; // Get the first popular movie
+            const movie = response.results[Math.floor(Math.random() * response.results.length)]; // Get a random popular movie
             displayFeaturedMovie(movie);
         },
         error: function(error) {
@@ -33,15 +33,14 @@ function fetchFeaturedMovie() {
 }
 
 function displayFeaturedMovie(movie) {
-    const featuredMovieDiv = $('#featured-movie');
-    featuredMovieDiv.empty();
+    const featuredMovieDiv = $('#featured');
     featuredMovieDiv.css('background-image', `url(https://image.tmdb.org/t/p/w1280${movie.backdrop_path})`);
     const movieElement = `
-        <div>
+        <div id="featured-movie">
             <h2>${movie.title}</h2>
             <p>${movie.overview}</p>
-            <button>Watch Now</button>
-            <button>Details</button>
+            <button onclick="showMovieDetails(${movie.id})">Watch Now</button>
+            <button onclick="showMovieDetails(${movie.id})">Details</button>
         </div>
     `;
     featuredMovieDiv.append(movieElement);
@@ -65,9 +64,8 @@ function displaySuggestedMovies(movies) {
     suggestedContainer.empty();
     movies.forEach(movie => {
         const movieElement = `
-            <div class="movie-card">
+            <div class="movie-card" onclick="showMovieDetails(${movie.id})">
                 <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="${movie.title}">
-                <h3>${movie.title}</h3>
             </div>
         `;
         suggestedContainer.append(movieElement);
@@ -83,6 +81,31 @@ function searchMovies(query) {
         },
         error: function(error) {
             console.error('Error searching movies:', error);
+        }
+    });
+}
+
+function showMovieDetails(movieId) {
+    $.ajax({
+        url: `https://api.themoviedb.org/3/movie/${movieId}?api_key=${apiKey}`,
+        method: 'GET',
+        success: function(response) {
+            const movieDetailsDiv = $('#featured');
+            movieDetailsDiv.empty();
+            const movieDetails = `
+                <div id="featured-movie">
+                    <h2>${response.title}</h2>
+                    <p>${response.overview}</p>
+                    <img src="https://image.tmdb.org/t/p/w500${response.poster_path}" alt="${response.title}">
+                    <p>Release Date: ${response.release_date}</p>
+                    <p>Rating: ${response.vote_average}</p>
+                    <button onclick="fetchFeaturedMovie()">Back</button>
+                </div>
+            `;
+            movieDetailsDiv.append(movieDetails);
+        },
+        error: function(error) {
+            console.error('Error fetching movie details:', error);
         }
     });
 }
