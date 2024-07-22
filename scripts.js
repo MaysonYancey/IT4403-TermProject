@@ -1,4 +1,4 @@
-const apiKey = '<<your_api_key>>';
+const apiKey = 'c7775f8a27b5480688df83b142bd92a3';
 
 $(document).ready(function() {
     // Fetch and display featured movie
@@ -35,12 +35,13 @@ function fetchFeaturedMovie() {
 function displayFeaturedMovie(movie) {
     const featuredMovieDiv = $('#featured-movie');
     featuredMovieDiv.empty();
+    featuredMovieDiv.css('background-image', `url(https://image.tmdb.org/t/p/w1280${movie.backdrop_path})`);
     const movieElement = `
-        <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="${movie.title}">
         <div>
-            <h3>${movie.title}</h3>
+            <h2>${movie.title}</h2>
             <p>${movie.overview}</p>
-            <button>Play</button>
+            <button>Watch Now</button>
+            <button>Details</button>
         </div>
     `;
     featuredMovieDiv.append(movieElement);

@@ -10,7 +10,14 @@
 </head>
 <body>
     <header>
-        <h1>Movie Database</h1>
+        <nav>
+            <ul>
+                <li><a href="#">Home</a></li>
+                <li><a href="#">Movies</a></li>
+                <li><a href="#">Series</a></li>
+                <li><a href="#">Kids</a></li>
+            </ul>
+        </nav>
         <div id="search-container">
             <input type="text" id="search-input" placeholder="Search for movies...">
             <button id="search-button">Search</button>
@@ -18,11 +25,10 @@
     </header>
     <main>
         <section id="featured">
-            <h2>Featured Movie</h2>
             <div id="featured-movie"></div>
         </section>
         <section id="suggested">
-            <h2>Suggested</h2>
+            <h2>Trending Movies</h2>
             <div id="suggested-container"></div>
         </section>
     </main>

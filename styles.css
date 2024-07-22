@@ -8,17 +8,29 @@ body {
 
 header {
     background-color: #20232a;
-    padding: 20px;
-    text-align: center;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
-header h1 {
+nav ul {
+    list-style-type: none;
     margin: 0;
-    font-size: 2em;
+    padding: 0;
+    display: flex;
+    gap: 20px;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    font-size: 1.2em;
 }
 
 #search-container {
-    margin: 20px 0;
+    display: flex;
+    align-items: center;
 }
 
 #search-input {
@@ -40,6 +52,7 @@ main {
 }
 
 #featured {
+    position: relative;
     margin-bottom: 40px;
 }
 
@@ -49,11 +62,22 @@ main {
     background-color: #333;
     padding: 20px;
     border-radius: 10px;
+    position: relative;
+    background-size: cover;
+    background-position: center;
+    height: 300px;
 }
 
 #featured-movie img {
     width: 200px;
     margin-right: 20px;
+    border-radius: 10px;
+}
+
+#featured-movie div {
+    color: white;
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 20px;
     border-radius: 10px;
 }
 
