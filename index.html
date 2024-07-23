@@ -9,17 +9,17 @@
     <script src="scripts.js" defer></script>
 </head>
 <body>
-    <header>
+    <header id="navbar">
         <nav>
             <ul>
-                <li><a href="#">Home</a></li>
-                <li><a href="#">Movies</a></li>
-                <li><a href="#">Shows</a></li>
+                <li><a href="#" id="home-btn">Home</a></li>
+                <li><a href="#" id="movies-btn">Movies</a></li>
+                <li><a href="#" id="shows-btn">Shows</a></li>
             </ul>
         </nav>
         <div id="search-container">
-            <input type="text" id="search-input" placeholder="Search for movies...">
-            <button id="search-button">Search</button>
+            <input type="text" id="search-input" placeholder="Search...">
+            <button id="search-button"><img src="search-icon.png" alt="Search"></button>
         </div>
     </header>
     <main>
@@ -30,7 +30,7 @@
             </div>
         </section>
         <section id="suggested">
-            <h2>Trending Movies</h2>
+            <h2 id="section-title">Trending Movies</h2>
             <div id="suggested-container"></div>
         </section>
     </main>

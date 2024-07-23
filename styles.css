@@ -12,6 +12,10 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 1000;
 }
 
 nav ul {
@@ -29,7 +33,7 @@ nav a {
 }
 
 nav a:hover {
-    color: #61dafb;
+    color: red;
 }
 
 #search-container {
@@ -39,20 +43,29 @@ nav a:hover {
 
 #search-input {
     padding: 10px;
-    width: 300px;
+    width: 200px;
     font-size: 1em;
+    border: none;
+    border-radius: 5px;
+    background-color: #333;
+    color: white;
 }
 
 #search-button {
     padding: 10px;
-    font-size: 1em;
-    background-color: #61dafb;
+    background-color: red;
     border: none;
     cursor: pointer;
+    border-radius: 5px;
+}
+
+#search-button img {
+    width: 20px;
+    height: 20px;
 }
 
 main {
-    padding: 0;
+    padding-top: 60px;
 }
 
 #featured {
@@ -106,7 +119,7 @@ main {
     background-color: #333;
     border-radius: 10px;
     overflow: hidden;
-    width: 150px;
+    width: 200px;
     text-align: center;
     cursor: pointer;
 }
