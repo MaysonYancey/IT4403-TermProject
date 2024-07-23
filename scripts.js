@@ -39,18 +39,9 @@ $(document).ready(function() {
         }
     });
 
-    // Keep navbar stagnant after scrolling
-    $(window).on('scroll', function() {
-        if ($(this).scrollTop() > 50) {
-            $('#navbar').addClass('fixed');
-        } else {
-            $('#navbar').removeClass('fixed');
-        }
-    });
-
     // Details button functionality
     $('#details-btn').on('click', function() {
-        toggleDetails();
+        showItemDetails();
     });
 });
 
@@ -150,8 +141,10 @@ function searchMovies(query) {
     });
 }
 
-function showItemDetails(itemId, type) {
-    const url = type === 'movie' ? 
+function showItemDetails() {
+    const itemId = $('#details-btn').data('itemId');
+    const itemType = $('#details-btn').data('itemType');
+    const url = itemType === 'movie' ? 
         `https://api.themoviedb.org/3/movie/${itemId}?api_key=${apiKey}` : 
         `https://api.themoviedb.org/3/tv/${itemId}?api_key=${apiKey}`;
     
@@ -159,9 +152,7 @@ function showItemDetails(itemId, type) {
         url: url,
         method: 'GET',
         success: function(response) {
-            const backdropPath = response.backdrop_path || response.poster_path;
             const itemDetailsDiv = $('#featured');
-            itemDetailsDiv.css('background-image', `url(https://image.tmdb.org/t/p/w1280${backdropPath})`);
             const itemDetails = `
                 <div class="featured-text details-view">
                     <h2>${response.title || response.name}</h2>
