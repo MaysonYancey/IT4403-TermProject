@@ -132,6 +132,10 @@ main {
     font-size: 1.2em;
 }
 
+#suggested {
+    padding-left: 20px; /* Added padding to move the section away from the left edge */
+}
+
 #suggested-container {
     display: flex;
     flex-wrap: wrap;

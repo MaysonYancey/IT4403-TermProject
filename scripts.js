@@ -136,7 +136,7 @@ function displaySuggestedItems(items, type) {
         `;
         suggestedContainer.append(itemElement);
     });
-    // Add paging controls
+    // Add paging controls at the top and bottom
     const pagingControls = `
         <div id="paging-controls">
             <button onclick="fetchSuggestedMovies('${type}', ${currentPage - 1}, '${currentSort}', '${currentGenre}')" ${currentPage === 1 ? 'disabled' : ''}>Previous</button>
@@ -144,6 +144,7 @@ function displaySuggestedItems(items, type) {
         </div>
     `;
     suggestedContainer.prepend(pagingControls);
+    suggestedContainer.append(pagingControls);
 }
 
 function updateFeaturedItem(itemId, type) {
@@ -156,6 +157,10 @@ function updateFeaturedItem(itemId, type) {
         method: 'GET',
         success: function(response) {
             displayFeaturedItem(response);
+            // Scroll to the featured section
+            $('html, body').animate({
+                scrollTop: $("#featured").offset().top
+            }, 500);
         },
         error: function(error) {
             console.error('Error fetching item details:', error);
