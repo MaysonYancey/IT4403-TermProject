@@ -36,6 +36,7 @@ $(document).ready(function() {
         const query = $('#search-input').val();
         if (query) {
             searchMovies(query);
+            $('#search-input').val('');  // Clear the search input field after searching
         } else {
             alert('Please enter a search query');
         }
@@ -98,6 +99,10 @@ function fetchSuggestedMovies(type = 'movie', page = 1) {
         method: 'GET',
         success: function(response) {
             displaySuggestedItems(response.results, type);
+            // Maintain scroll position on pagination
+            $('html, body').animate({
+                scrollTop: $("#suggested").offset().top
+            }, 500);
         },
         error: function(error) {
             console.error('Error fetching suggested items:', error);
