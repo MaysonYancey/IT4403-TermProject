@@ -2,8 +2,7 @@ const apiKey = 'c7775f8a27b5480688df83b142bd92a3';
 let currentPage = 1;
 let currentType = 'movie';
 let currentQuery = '';
-let currentSort = 'popularity.desc';
-let currentGenre = '';
+let isGridView = true;
 
 $(document).ready(function() {
     // Initial load
@@ -48,23 +47,10 @@ $(document).ready(function() {
         }
     });
 
-    // Sorting and Filtering functionality
-    $('#sort-select').on('change', function() {
-        currentSort = $(this).val();
-        if (currentQuery) {
-            searchMovies(currentQuery, 1);
-        } else {
-            fetchSuggestedMovies(currentType, 1);
-        }
-    });
-
-    $('#genre-select').on('change', function() {
-        currentGenre = $(this).val();
-        if (currentQuery) {
-            searchMovies(currentQuery, 1);
-        } else {
-            fetchSuggestedMovies(currentType, 1);
-        }
+    // Toggle view functionality
+    $('#toggle-view').on('click', function() {
+        isGridView = !isGridView;
+        displaySuggestedItems();
     });
 });
 
@@ -102,15 +88,10 @@ function displayFeaturedItem(item) {
     $('.featured-text').empty().append(itemElement);
 }
 
-function fetchSuggestedMovies(type = 'movie', page = 1, sort = 'popularity.desc', genre = '') {
+function fetchSuggestedMovies(type = 'movie', page = 1) {
     currentType = type;
     currentPage = page;
-    currentSort = sort;
-    currentGenre = genre;
-    let url = `https://api.themoviedb.org/3/discover/${type}?api_key=${apiKey}&page=${page}&sort_by=${sort}`;
-    if (genre) {
-        url += `&with_genres=${genre}`;
-    }
+    const url = `https://api.themoviedb.org/3/discover/${type}?api_key=${apiKey}&page=${page}`;
 
     $.ajax({
         url: url,
@@ -129,7 +110,7 @@ function displaySuggestedItems(items, type) {
     suggestedContainer.empty();
     items.forEach(item => {
         const itemElement = `
-            <div class="movie-card" onclick="updateFeaturedItem(${item.id}, '${type}')">
+            <div class="movie-card ${isGridView ? 'grid-view' : 'list-view'}" onclick="updateFeaturedItem(${item.id}, '${type}')">
                 <img src="https://image.tmdb.org/t/p/w500${item.poster_path}" alt="${item.title || item.name}">
                 <h3>${item.title || item.name}</h3>
             </div>
@@ -139,8 +120,8 @@ function displaySuggestedItems(items, type) {
     // Add paging controls at the top and bottom
     const pagingControls = `
         <div id="paging-controls">
-            <button onclick="fetchSuggestedMovies('${type}', ${currentPage - 1}, '${currentSort}', '${currentGenre}')" ${currentPage === 1 ? 'disabled' : ''}>Previous</button>
-            <button onclick="fetchSuggestedMovies('${type}', ${currentPage + 1}, '${currentSort}', '${currentGenre}')">Next</button>
+            <button onclick="fetchSuggestedMovies('${type}', ${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>Previous</button>
+            <button onclick="fetchSuggestedMovies('${type}', ${currentPage + 1})">Next</button>
         </div>
     `;
     suggestedContainer.prepend(pagingControls);
@@ -172,7 +153,7 @@ function searchMovies(query, page = 1) {
     currentQuery = query;
     currentPage = page;
     $.ajax({
-        url: `https://api.themoviedb.org/3/search/multi?api_key=${apiKey}&query=${query}&page=${page}&sort_by=${currentSort}&with_genres=${currentGenre}`,
+        url: `https://api.themoviedb.org/3/search/multi?api_key=${apiKey}&query=${query}&page=${page}`,
         method: 'GET',
         success: function(response) {
             const topResult = response.results[0];

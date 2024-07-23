@@ -7,16 +7,12 @@
     background-color: #20232a;
 }
 
-#controls label, #controls select {
-    margin: 0 10px;
-    color: white;
-}
-
-#controls select {
-    padding: 5px;
+#controls button {
+    padding: 10px 20px;
+    background-color: red;
     border: none;
+    cursor: pointer;
     border-radius: 5px;
-    background-color: #333;
     color: white;
 }
 
@@ -155,6 +151,27 @@ main {
 .movie-card img {
     width: 100%;
     height: auto;
+}
+
+.movie-card.grid-view {
+    width: calc(100% / 6 - 20px);
+}
+
+.movie-card.list-view {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.movie-card.list-view img {
+    width: auto;
+    height: 100px;
+}
+
+.movie-card.list-view h3 {
+    font-size: 1.5em;
+    text-align: left;
 }
 
 footer {
