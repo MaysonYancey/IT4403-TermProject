@@ -13,18 +13,21 @@ $(document).ready(function() {
 
     // Home button functionality
     $('#home-btn').on('click', function() {
+        currentQuery = '';
         fetchFeaturedMovie();
         fetchSuggestedMovies();
     });
 
     // Movies button functionality
     $('#movies-btn').on('click', function() {
+        currentQuery = '';
         fetchFeaturedMovie('movie');
         fetchSuggestedMovies('movie');
     });
 
     // Shows button functionality
     $('#shows-btn').on('click', function() {
+        currentQuery = '';
         fetchFeaturedMovie('tv');
         fetchSuggestedMovies('tv');
     });
@@ -48,12 +51,20 @@ $(document).ready(function() {
     // Sorting and Filtering functionality
     $('#sort-select').on('change', function() {
         currentSort = $(this).val();
-        fetchSuggestedMovies(currentType, 1, currentSort, currentGenre);
+        if (currentQuery) {
+            searchMovies(currentQuery, 1);
+        } else {
+            fetchSuggestedMovies(currentType, 1);
+        }
     });
 
     $('#genre-select').on('change', function() {
         currentGenre = $(this).val();
-        fetchSuggestedMovies(currentType, 1, currentSort, currentGenre);
+        if (currentQuery) {
+            searchMovies(currentQuery, 1);
+        } else {
+            fetchSuggestedMovies(currentType, 1);
+        }
     });
 });
 
@@ -96,7 +107,7 @@ function fetchSuggestedMovies(type = 'movie', page = 1, sort = 'popularity.desc'
     currentPage = page;
     currentSort = sort;
     currentGenre = genre;
-    let url = `https://api.themoviedb.org/3/${type}/top_rated?api_key=${apiKey}&page=${page}&sort_by=${sort}`;
+    let url = `https://api.themoviedb.org/3/discover/${type}?api_key=${apiKey}&page=${page}&sort_by=${sort}`;
     if (genre) {
         url += `&with_genres=${genre}`;
     }
@@ -132,7 +143,7 @@ function displaySuggestedItems(items, type) {
             <button onclick="fetchSuggestedMovies('${type}', ${currentPage + 1}, '${currentSort}', '${currentGenre}')">Next</button>
         </div>
     `;
-    suggestedContainer.append(pagingControls);
+    suggestedContainer.prepend(pagingControls);
 }
 
 function updateFeaturedItem(itemId, type) {
@@ -156,7 +167,7 @@ function searchMovies(query, page = 1) {
     currentQuery = query;
     currentPage = page;
     $.ajax({
-        url: `https://api.themoviedb.org/3/search/multi?api_key=${apiKey}&query=${query}&page=${page}`,
+        url: `https://api.themoviedb.org/3/search/multi?api_key=${apiKey}&query=${query}&page=${page}&sort_by=${currentSort}&with_genres=${currentGenre}`,
         method: 'GET',
         success: function(response) {
             const topResult = response.results[0];

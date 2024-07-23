@@ -1,3 +1,4 @@
+/* Add styles for the new sorting and filtering controls */
 #controls {
     display: flex;
     justify-content: center;
@@ -60,7 +61,7 @@ nav a:hover {
 #search-container {
     display: flex;
     align-items: center;
-    margin-right: 20px; 
+    margin-right: 20px; /* Added margin to move it away from the edge */
 }
 
 #search-input {
@@ -142,7 +143,7 @@ main {
     background-color: #333;
     border-radius: 10px;
     overflow: hidden;
-    width: 200px;
+    width: calc(100% / 6 - 20px); /* Adjusted to fit 6 movies per row */
     text-align: center;
     cursor: pointer;
 }
@@ -161,6 +162,7 @@ footer {
     width: 100%;
 }
 
+/* Add styles for person details */
 #person-details {
     padding: 20px;
     background-color: #20232a;
@@ -177,4 +179,26 @@ footer {
 #person-info h3 {
     margin: 0;
     padding: 0;
+}
+
+/* Pagination controls */
+#paging-controls {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+#paging-controls button {
+    padding: 10px 20px;
+    margin: 0 10px;
+    background-color: red;
+    border: none;
+    color: white;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+#paging-controls button:disabled {
+    background-color: #555;
+    cursor: not-allowed;
 }
