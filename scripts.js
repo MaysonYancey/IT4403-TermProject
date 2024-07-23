@@ -1,9 +1,15 @@
 const apiKey = 'c7775f8a27b5480688df83b142bd92a3';
+let currentPage = 1;
+let currentType = 'movie';
+let currentQuery = '';
+let currentSort = 'popularity.desc';
+let currentGenre = '';
 
 $(document).ready(function() {
     // Initial load
     fetchFeaturedMovie();
     fetchSuggestedMovies();
+    fetchGenres();
 
     // Home button functionality
     $('#home-btn').on('click', function() {
@@ -39,13 +45,20 @@ $(document).ready(function() {
         }
     });
 
-    // Details button functionality
-    $('#details-btn').on('click', function() {
-        showItemDetails();
+    // Sorting and Filtering functionality
+    $('#sort-select').on('change', function() {
+        currentSort = $(this).val();
+        fetchSuggestedMovies(currentType, 1, currentSort, currentGenre);
+    });
+
+    $('#genre-select').on('change', function() {
+        currentGenre = $(this).val();
+        fetchSuggestedMovies(currentType, 1, currentSort, currentGenre);
     });
 });
 
 function fetchFeaturedMovie(type = 'movie') {
+    currentType = type;
     const url = type === 'movie' ? 
         `https://api.themoviedb.org/3/movie/popular?api_key=${apiKey}&page=1` : 
         `https://api.themoviedb.org/3/tv/popular?api_key=${apiKey}&page=1`;
@@ -71,17 +84,23 @@ function displayFeaturedItem(item) {
         <div class="featured-text">
             <h2>${item.title || item.name}</h2>
             <p>${item.overview}</p>
+            <p>Release Date: ${item.release_date || item.first_air_date}</p>
+            <p>Rating: ${item.vote_average}</p>
         </div>
     `;
     $('.featured-text').empty().append(itemElement);
-    $('#details-btn').data('itemId', item.id).data('itemType', item.media_type || 'movie');
 }
 
-function fetchSuggestedMovies(type = 'movie') {
-    const url = type === 'movie' ? 
-        `https://api.themoviedb.org/3/movie/top_rated?api_key=${apiKey}&page=1` : 
-        `https://api.themoviedb.org/3/tv/top_rated?api_key=${apiKey}&page=1`;
-    
+function fetchSuggestedMovies(type = 'movie', page = 1, sort = 'popularity.desc', genre = '') {
+    currentType = type;
+    currentPage = page;
+    currentSort = sort;
+    currentGenre = genre;
+    let url = `https://api.themoviedb.org/3/${type}/top_rated?api_key=${apiKey}&page=${page}&sort_by=${sort}`;
+    if (genre) {
+        url += `&with_genres=${genre}`;
+    }
+
     $.ajax({
         url: url,
         method: 'GET',
@@ -106,6 +125,14 @@ function displaySuggestedItems(items, type) {
         `;
         suggestedContainer.append(itemElement);
     });
+    // Add paging controls
+    const pagingControls = `
+        <div id="paging-controls">
+            <button onclick="fetchSuggestedMovies('${type}', ${currentPage - 1}, '${currentSort}', '${currentGenre}')" ${currentPage === 1 ? 'disabled' : ''}>Previous</button>
+            <button onclick="fetchSuggestedMovies('${type}', ${currentPage + 1}, '${currentSort}', '${currentGenre}')">Next</button>
+        </div>
+    `;
+    suggestedContainer.append(pagingControls);
 }
 
 function updateFeaturedItem(itemId, type) {
@@ -125,9 +152,11 @@ function updateFeaturedItem(itemId, type) {
     });
 }
 
-function searchMovies(query) {
+function searchMovies(query, page = 1) {
+    currentQuery = query;
+    currentPage = page;
     $.ajax({
-        url: `https://api.themoviedb.org/3/search/multi?api_key=${apiKey}&query=${query}`,
+        url: `https://api.themoviedb.org/3/search/multi?api_key=${apiKey}&query=${query}&page=${page}`,
         method: 'GET',
         success: function(response) {
             const topResult = response.results[0];
@@ -141,41 +170,50 @@ function searchMovies(query) {
     });
 }
 
-function showItemDetails() {
-    const itemId = $('#details-btn').data('itemId');
-    const itemType = $('#details-btn').data('itemType');
-    const url = itemType === 'movie' ? 
-        `https://api.themoviedb.org/3/movie/${itemId}?api_key=${apiKey}` : 
-        `https://api.themoviedb.org/3/tv/${itemId}?api_key=${apiKey}`;
-    
+function fetchGenres() {
     $.ajax({
-        url: url,
+        url: `https://api.themoviedb.org/3/genre/movie/list?api_key=${apiKey}`,
         method: 'GET',
         success: function(response) {
-            const itemDetailsDiv = $('#featured');
-            const itemDetails = `
-                <div class="featured-text details-view">
-                    <h2>${response.title || response.name}</h2>
-                    <p>${response.overview}</p>
-                    <p>Release Date: ${response.release_date || response.first_air_date}</p>
-                    <p>Rating: ${response.vote_average}</p>
-                    <button id="back-btn" onclick="toggleDetails()">Back</button>
-                </div>
-            `;
-            $('.featured-text').empty().append(itemDetails);
-            $('#featured-movie').css('transform', 'translateX(-100%)');
+            populateGenres(response.genres);
         },
         error: function(error) {
-            console.error('Error fetching item details:', error);
+            console.error('Error fetching genres:', error);
         }
     });
 }
 
-function toggleDetails() {
-    const isDetailsView = $('#featured-movie').css('transform') === 'matrix(1, 0, 0, 0, 0, 0)'; // Check if it's in the details view
-    if (isDetailsView) {
-        $('#featured-movie').css('transform', 'translateX(0)');
-    } else {
-        $('#featured-movie').css('transform', 'translateX(-100%)');
-    }
+function populateGenres(genres) {
+    const genreSelect = $('#genre-select');
+    genreSelect.empty();
+    genreSelect.append('<option value="">All</option>');
+    genres.forEach(genre => {
+        const optionElement = `<option value="${genre.id}">${genre.name}</option>`;
+        genreSelect.append(optionElement);
+    });
+}
+
+function showPersonDetails(personId) {
+    $.ajax({
+        url: `https://api.themoviedb.org/3/person/${personId}?api_key=${apiKey}`,
+        method: 'GET',
+        success: function(response) {
+            displayPersonDetails(response);
+        },
+        error: function(error) {
+            console.error('Error fetching person details:', error);
+        }
+    });
+}
+
+function displayPersonDetails(person) {
+    const personDetailsDiv = $('#person-info');
+    const personDetails = `
+        <h3>${person.name}</h3>
+        <p>Birthday: ${person.birthday}</p>
+        <p>Place of Birth: ${person.place_of_birth}</p>
+        <p>Biography: ${person.biography}</p>
+    `;
+    personDetailsDiv.empty().append(personDetails);
+    $('#person-details').show();
 }

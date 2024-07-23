@@ -28,13 +28,24 @@
                 <div class="gradient"></div>
                 <div class="featured-text"></div>
             </div>
-            <div id="details-link">
-                <a href="#" id="details-btn">Details</a>
-            </div>
+        </section>
+        <section id="controls">
+            <label for="sort-select">Sort by:</label>
+            <select id="sort-select">
+                <option value="popularity.desc">Popularity</option>
+                <option value="release_date.desc">Release Date</option>
+                <option value="vote_average.desc">Rating</option>
+            </select>
+            <label for="genre-select">Filter by Genre:</label>
+            <select id="genre-select"></select>
         </section>
         <section id="suggested">
-            <h2 id="section-title">Trending</h2>
+            <h2 id="section-title">Trending Movies</h2>
             <div id="suggested-container"></div>
+        </section>
+        <section id="person-details" style="display: none;">
+            <h2>Person Details</h2>
+            <div id="person-info"></div>
         </section>
     </main>
     <footer>
