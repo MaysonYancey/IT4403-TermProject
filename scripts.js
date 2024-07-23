@@ -50,7 +50,7 @@ $(document).ready(function() {
 
     // Details button functionality
     $('#details-btn').on('click', function() {
-        showDetails();
+        toggleDetails();
     });
 });
 
@@ -80,7 +80,6 @@ function displayFeaturedItem(item) {
         <div class="featured-text">
             <h2>${item.title || item.name}</h2>
             <p>${item.overview}</p>
-            <button onclick="showItemDetails(${item.id}, '${item.media_type || 'movie'}')">Watch Now</button>
         </div>
     `;
     $('.featured-text').empty().append(itemElement);
@@ -109,12 +108,29 @@ function displaySuggestedItems(items, type) {
     suggestedContainer.empty();
     items.forEach(item => {
         const itemElement = `
-            <div class="movie-card" onclick="showItemDetails(${item.id}, '${type}')">
+            <div class="movie-card" onclick="updateFeaturedItem(${item.id}, '${type}')">
                 <img src="https://image.tmdb.org/t/p/w500${item.poster_path}" alt="${item.title || item.name}">
                 <h3>${item.title || item.name}</h3>
             </div>
         `;
         suggestedContainer.append(itemElement);
+    });
+}
+
+function updateFeaturedItem(itemId, type) {
+    const url = type === 'movie' ? 
+        `https://api.themoviedb.org/3/movie/${itemId}?api_key=${apiKey}` : 
+        `https://api.themoviedb.org/3/tv/${itemId}?api_key=${apiKey}`;
+    
+    $.ajax({
+        url: url,
+        method: 'GET',
+        success: function(response) {
+            displayFeaturedItem(response);
+        },
+        error: function(error) {
+            console.error('Error fetching item details:', error);
+        }
     });
 }
 
@@ -152,7 +168,7 @@ function showItemDetails(itemId, type) {
                     <p>${response.overview}</p>
                     <p>Release Date: ${response.release_date || response.first_air_date}</p>
                     <p>Rating: ${response.vote_average}</p>
-                    <button id="back-btn" onclick="showDetails()">Back</button>
+                    <button id="back-btn" onclick="toggleDetails()">Back</button>
                 </div>
             `;
             $('.featured-text').empty().append(itemDetails);
@@ -164,9 +180,11 @@ function showItemDetails(itemId, type) {
     });
 }
 
-function showDetails() {
-    $('#featured-movie').css('transform', 'translateX(0)');
-    const itemId = $('#details-btn').data('itemId');
-    const itemType = $('#details-btn').data('itemType');
-    showItemDetails(itemId, itemType);
+function toggleDetails() {
+    const isDetailsView = $('#featured-movie').css('transform') === 'matrix(1, 0, 0, 0, 0, 0)'; // Check if it's in the details view
+    if (isDetailsView) {
+        $('#featured-movie').css('transform', 'translateX(0)');
+    } else {
+        $('#featured-movie').css('transform', 'translateX(-100%)');
+    }
 }
