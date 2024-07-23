@@ -36,14 +36,14 @@ function displayFeaturedMovie(movie) {
     const featuredMovieDiv = $('#featured');
     featuredMovieDiv.css('background-image', `url(https://image.tmdb.org/t/p/w1280${movie.backdrop_path})`);
     const movieElement = `
-        <div id="featured-movie">
+        <div class="featured-text">
             <h2>${movie.title}</h2>
             <p>${movie.overview}</p>
             <button onclick="showMovieDetails(${movie.id})">Watch Now</button>
             <button onclick="showMovieDetails(${movie.id})">Details</button>
         </div>
     `;
-    featuredMovieDiv.empty().append(movieElement);
+    $('.featured-text').empty().append(movieElement);
 }
 
 function fetchSuggestedMovies() {
@@ -94,7 +94,7 @@ function showMovieDetails(movieId) {
             const movieDetailsDiv = $('#featured');
             movieDetailsDiv.empty().css('background-image', `url(https://image.tmdb.org/t/p/w1280${response.backdrop_path})`);
             const movieDetails = `
-                <div id="featured-movie">
+                <div class="featured-text">
                     <h2>${response.title}</h2>
                     <p>${response.overview}</p>
                     <img src="https://image.tmdb.org/t/p/w500${response.poster_path}" alt="${response.title}">
@@ -103,7 +103,7 @@ function showMovieDetails(movieId) {
                     <button onclick="fetchFeaturedMovie()">Back</button>
                 </div>
             `;
-            movieDetailsDiv.append(movieDetails);
+            $('.featured-text').append(movieDetails);
         },
         error: function(error) {
             console.error('Error fetching movie details:', error);

@@ -62,16 +62,37 @@ main {
     height: 70vh;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     color: white;
 }
 
 #featured-movie {
-    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    width: 100%;
+    position: relative;
+}
+
+.gradient {
+    background: linear-gradient(to right, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0));
+    height: 100%;
+    width: 40%;
+    position: absolute;
+}
+
+.featured-text {
+    position: relative;
     padding: 20px;
-    border-radius: 10px;
-    max-width: 60%;
-    text-align: center;
+    max-width: 40%;
+}
+
+.featured-text h2 {
+    font-size: 3em;
+    font-weight: bold;
+}
+
+.featured-text p {
+    font-size: 1.2em;
 }
 
 #suggested-container {
