@@ -52,31 +52,33 @@ nav a:hover {
 }
 
 main {
-    padding: 20px;
+    padding: 0;
 }
 
 #featured {
     position: relative;
-    margin-bottom: 40px;
     background-size: cover;
     background-position: center;
-    height: 300px;
+    height: 70vh;
     display: flex;
     align-items: center;
     justify-content: center;
+    color: white;
 }
 
 #featured-movie {
-    color: white;
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgba(0, 0, 0, 0.6);
     padding: 20px;
     border-radius: 10px;
+    max-width: 60%;
+    text-align: center;
 }
 
 #suggested-container {
     display: flex;
     flex-wrap: wrap;
     gap: 20px;
+    padding: 20px;
 }
 
 .movie-card {

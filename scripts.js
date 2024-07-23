@@ -43,7 +43,7 @@ function displayFeaturedMovie(movie) {
             <button onclick="showMovieDetails(${movie.id})">Details</button>
         </div>
     `;
-    featuredMovieDiv.append(movieElement);
+    featuredMovieDiv.empty().append(movieElement);
 }
 
 function fetchSuggestedMovies() {
@@ -66,6 +66,7 @@ function displaySuggestedMovies(movies) {
         const movieElement = `
             <div class="movie-card" onclick="showMovieDetails(${movie.id})">
                 <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="${movie.title}">
+                <h3>${movie.title}</h3>
             </div>
         `;
         suggestedContainer.append(movieElement);
@@ -91,7 +92,7 @@ function showMovieDetails(movieId) {
         method: 'GET',
         success: function(response) {
             const movieDetailsDiv = $('#featured');
-            movieDetailsDiv.empty();
+            movieDetailsDiv.empty().css('background-image', `url(https://image.tmdb.org/t/p/w1280${response.backdrop_path})`);
             const movieDetails = `
                 <div id="featured-movie">
                     <h2>${response.title}</h2>
