@@ -3,7 +3,7 @@ let currentPage = 1;
 let currentType = 'movie';
 let currentQuery = '';
 let isGridView = true;
-let currentItems = []; // To keep track of the current items displayed
+let currentItems = [];
 
 $(document).ready(function() {
     // Initial load
@@ -11,45 +11,45 @@ $(document).ready(function() {
     fetchSuggestedMovies();
     fetchGenres();
 
-    // Home button functionality
+    // Home button 
     $('#home-btn').on('click', function() {
         currentQuery = '';
         currentPage = 1;
         fetchFeaturedMovie();
         fetchSuggestedMovies();
-        $('#toggle-view').show(); // Ensure toggle view is shown on these pages
-        $('#section-title').text('Trending'); // Reset section title
-        $('#person-details').hide(); // Hide person details on navigation
+        $('#toggle-view').show();
+        $('#section-title').text('Trending'); 
+        $('#person-details').hide();
     });
 
-    // Movies button functionality
+    // Movies button 
     $('#movies-btn').on('click', function() {
         currentQuery = '';
         currentPage = 1;
         fetchFeaturedMovie('movie');
         fetchSuggestedMovies('movie');
-        $('#toggle-view').show(); // Ensure toggle view is shown on these pages
-        $('#section-title').text('Trending'); // Reset section title
-        $('#person-details').hide(); // Hide person details on navigation
+        $('#toggle-view').show(); 
+        $('#section-title').text('Trending'); 
+        $('#person-details').hide(); 
     });
 
-    // Shows button functionality
+    // Shows button 
     $('#shows-btn').on('click', function() {
         currentQuery = '';
         currentPage = 1;
         fetchFeaturedMovie('tv');
         fetchSuggestedMovies('tv');
-        $('#toggle-view').show(); // Ensure toggle view is shown on these pages
-        $('#section-title').text('Trending'); // Reset section title
-        $('#person-details').hide(); // Hide person details on navigation
+        $('#toggle-view').show(); 
+        $('#section-title').text('Trending'); 
+        $('#person-details').hide();
     });
 
-    // Show of the Month button functionality
+    // Show of the Month button
     $('#show-of-the-month-btn').on('click', function() {
         displayShowOfTheMonth();
-        $('#toggle-view').hide(); // Hide toggle view on this page
-        $('#section-title').text('Details'); // Change section title
-        $('#person-details').hide(); // Hide person details on navigation
+        $('#toggle-view').hide(); 
+        $('#section-title').text('Details'); 
+        $('#person-details').hide(); 
     });
 
     // Search functionality
@@ -57,7 +57,7 @@ $(document).ready(function() {
         const query = $('#search-input').val();
         if (query) {
             searchMovies(query);
-            $('#search-input').val('');  // Clear the search input field after searching
+            $('#search-input').val('');  // clear search
         } else {
             alert('Please enter a search query');
         }
@@ -69,10 +69,10 @@ $(document).ready(function() {
         }
     });
 
-    // Toggle view functionality
+    
     $('#toggle-view').on('click', function() {
         isGridView = !isGridView;
-        renderItems(currentItems, currentType); // Re-render the current items with the new view
+        renderItems(currentItems, currentType); 
     });
 });
 
@@ -119,8 +119,8 @@ function fetchSuggestedMovies(type = 'movie', page = 1) {
         url: url,
         method: 'GET',
         success: function(response) {
-            currentItems = response.results; // Save the current items
-            renderItems(response.results, type); // Render the items with the current view
+            currentItems = response.results; 
+            renderItems(response.results, type); 
         },
         error: function(error) {
             console.error('Error fetching suggested items:', error);
@@ -140,7 +140,7 @@ function renderItems(items, type) {
         `;
         suggestedContainer.append(itemElement);
     });
-    // Add paging controls at the top and bottom
+
     const pagingControls = `
         <div id="paging-controls" class="${isGridView ? '' : 'list-view'}">
             <button class="prev-page" ${currentPage === 1 ? 'disabled' : ''}>Previous</button>
@@ -150,7 +150,6 @@ function renderItems(items, type) {
     suggestedContainer.prepend(pagingControls);
     suggestedContainer.append(pagingControls);
 
-    // Re-bind the click events for pagination buttons
     $('.prev-page').on('click', function() {
         if (currentPage > 1) {
             currentPage -= 1;
@@ -200,7 +199,7 @@ function searchMovies(query, page = 1) {
         url: `https://api.themoviedb.org/3/search/multi?api_key=${apiKey}&query=${query}&page=${page}`,
         method: 'GET',
         success: function(response) {
-            currentItems = response.results.slice(1); // Save the current items, excluding the top result
+            currentItems = response.results.slice(1); 
             const topResult = response.results[0];
             displayFeaturedItem(topResult);
             renderItems(response.results.slice(1), 'search');
@@ -261,7 +260,7 @@ function displayPersonDetails(person) {
 }
 
 function displayShowOfTheMonth() {
-    const showId = 2316; // The ID for "The Office"
+    const showId = 2316; // office
     const url = `https://api.themoviedb.org/3/tv/${showId}?api_key=${apiKey}`;
     
     $.ajax({
