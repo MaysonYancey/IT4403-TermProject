@@ -3,6 +3,7 @@ let currentPage = 1;
 let currentType = 'movie';
 let currentQuery = '';
 let isGridView = true;
+let currentItems = []; // To keep track of the current items displayed
 
 $(document).ready(function() {
     // Initial load
@@ -13,22 +14,42 @@ $(document).ready(function() {
     // Home button functionality
     $('#home-btn').on('click', function() {
         currentQuery = '';
+        currentPage = 1;
         fetchFeaturedMovie();
         fetchSuggestedMovies();
+        $('#toggle-view').show(); // Ensure toggle view is shown on these pages
+        $('#section-title').text('Trending'); // Reset section title
+        $('#person-details').hide(); // Hide person details on navigation
     });
 
     // Movies button functionality
     $('#movies-btn').on('click', function() {
         currentQuery = '';
+        currentPage = 1;
         fetchFeaturedMovie('movie');
         fetchSuggestedMovies('movie');
+        $('#toggle-view').show(); // Ensure toggle view is shown on these pages
+        $('#section-title').text('Trending'); // Reset section title
+        $('#person-details').hide(); // Hide person details on navigation
     });
 
     // Shows button functionality
     $('#shows-btn').on('click', function() {
         currentQuery = '';
+        currentPage = 1;
         fetchFeaturedMovie('tv');
         fetchSuggestedMovies('tv');
+        $('#toggle-view').show(); // Ensure toggle view is shown on these pages
+        $('#section-title').text('Trending'); // Reset section title
+        $('#person-details').hide(); // Hide person details on navigation
+    });
+
+    // Show of the Month button functionality
+    $('#show-of-the-month-btn').on('click', function() {
+        displayShowOfTheMonth();
+        $('#toggle-view').hide(); // Hide toggle view on this page
+        $('#section-title').text('Details'); // Change section title
+        $('#person-details').hide(); // Hide person details on navigation
     });
 
     // Search functionality
@@ -51,7 +72,7 @@ $(document).ready(function() {
     // Toggle view functionality
     $('#toggle-view').on('click', function() {
         isGridView = !isGridView;
-        displaySuggestedItems();
+        renderItems(currentItems, currentType); // Re-render the current items with the new view
     });
 });
 
@@ -98,11 +119,8 @@ function fetchSuggestedMovies(type = 'movie', page = 1) {
         url: url,
         method: 'GET',
         success: function(response) {
-            displaySuggestedItems(response.results, type);
-            // Maintain scroll position on pagination
-            $('html, body').animate({
-                scrollTop: $("#suggested").offset().top
-            }, 500);
+            currentItems = response.results; // Save the current items
+            renderItems(response.results, type); // Render the items with the current view
         },
         error: function(error) {
             console.error('Error fetching suggested items:', error);
@@ -110,7 +128,7 @@ function fetchSuggestedMovies(type = 'movie', page = 1) {
     });
 }
 
-function displaySuggestedItems(items, type) {
+function renderItems(items, type) {
     const suggestedContainer = $('#suggested-container');
     suggestedContainer.empty();
     items.forEach(item => {
@@ -124,13 +142,34 @@ function displaySuggestedItems(items, type) {
     });
     // Add paging controls at the top and bottom
     const pagingControls = `
-        <div id="paging-controls">
-            <button onclick="fetchSuggestedMovies('${type}', ${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>Previous</button>
-            <button onclick="fetchSuggestedMovies('${type}', ${currentPage + 1})">Next</button>
+        <div id="paging-controls" class="${isGridView ? '' : 'list-view'}">
+            <button class="prev-page" ${currentPage === 1 ? 'disabled' : ''}>Previous</button>
+            <button class="next-page">Next</button>
         </div>
     `;
     suggestedContainer.prepend(pagingControls);
     suggestedContainer.append(pagingControls);
+
+    // Re-bind the click events for pagination buttons
+    $('.prev-page').on('click', function() {
+        if (currentPage > 1) {
+            currentPage -= 1;
+            if (currentQuery) {
+                searchMovies(currentQuery, currentPage);
+            } else {
+                fetchSuggestedMovies(currentType, currentPage);
+            }
+        }
+    });
+    
+    $('.next-page').on('click', function() {
+        currentPage += 1;
+        if (currentQuery) {
+            searchMovies(currentQuery, currentPage);
+        } else {
+            fetchSuggestedMovies(currentType, currentPage);
+        }
+    });
 }
 
 function updateFeaturedItem(itemId, type) {
@@ -161,9 +200,10 @@ function searchMovies(query, page = 1) {
         url: `https://api.themoviedb.org/3/search/multi?api_key=${apiKey}&query=${query}&page=${page}`,
         method: 'GET',
         success: function(response) {
+            currentItems = response.results.slice(1); // Save the current items, excluding the top result
             const topResult = response.results[0];
             displayFeaturedItem(topResult);
-            displaySuggestedItems(response.results.slice(1), 'search');
+            renderItems(response.results.slice(1), 'search');
             $('#section-title').text('Results');
         },
         error: function(error) {
@@ -218,4 +258,64 @@ function displayPersonDetails(person) {
     `;
     personDetailsDiv.empty().append(personDetails);
     $('#person-details').show();
+}
+
+function displayShowOfTheMonth() {
+    const showId = 2316; // The ID for "The Office"
+    const url = `https://api.themoviedb.org/3/tv/${showId}?api_key=${apiKey}`;
+    
+    $.ajax({
+        url: url,
+        method: 'GET',
+        success: function(response) {
+            displayFeaturedItem(response);
+            displayShowDetails(response);
+        },
+        error: function(error) {
+            console.error('Error fetching show of the month details:', error);
+        }
+    });
+}
+
+function displayShowDetails(show) {
+    const showDetailsDiv = $('#suggested-container');
+    showDetailsDiv.empty();
+    const showDetails = `
+        <div class="show-details">
+            <h3>${show.name}</h3>
+            <p>${show.overview}</p>
+            <p>First Air Date: ${show.first_air_date}</p>
+            <p>Rating: ${show.vote_average}</p>
+            <h4>Cast:</h4>
+            <ul id="cast-list"></ul>
+        </div>
+    `;
+    showDetailsDiv.append(showDetails);
+    fetchShowCast(show.id);
+}
+
+function fetchShowCast(showId) {
+    const url = `https://api.themoviedb.org/3/tv/${showId}/credits?api_key=${apiKey}`;
+    
+    $.ajax({
+        url: url,
+        method: 'GET',
+        success: function(response) {
+            const castList = response.cast;
+            const castListDiv = $('#cast-list');
+            castListDiv.empty();
+            castList.forEach(castMember => {
+                const castItem = `
+                    <li>
+                        ${castMember.name} as ${castMember.character}
+                        <button onclick="showPersonDetails(${castMember.id})">More about them</button>
+                    </li>
+                `;
+                castListDiv.append(castItem);
+            });
+        },
+        error: function(error) {
+            console.error('Error fetching show cast:', error);
+        }
+    });
 }

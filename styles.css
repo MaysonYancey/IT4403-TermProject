@@ -189,6 +189,7 @@ footer {
     background-color: #20232a;
     margin: 20px;
     border-radius: 10px;
+    display: none;
 }
 
 #person-info {
@@ -206,7 +207,7 @@ footer {
 #paging-controls {
     display: flex;
     justify-content: center;
-    margin-bottom: 20px;
+    margin: 20px 0; /* Added margin to ensure spacing */
 }
 
 #paging-controls button {
@@ -219,7 +220,93 @@ footer {
     border-radius: 5px;
 }
 
+#paging-controls.list-view {
+    position: relative;
+    bottom: 60px; /* Adjust position above the footer */
+}
+
 #paging-controls button:disabled {
     background-color: #555;
     cursor: not-allowed;
+}
+
+#paging-controls.list-view {
+    position: relative;
+    bottom: auto; /* Adjust position above the footer */
+    margin-top: 20px;
+    margin-bottom: 80px; /* Ensure space above footer */
+}
+
+.show-details {
+    padding: 20px;
+    background-color: #20232a;
+    margin: 20px;
+    border-radius: 10px;
+}
+
+.show-details h3 {
+    font-size: 2em;
+    font-weight: bold;
+}
+
+.show-details p {
+    font-size: 1.2em;
+}
+
+.show-details h4 {
+    font-size: 1.5em;
+    margin-top: 20px;
+}
+
+/* Styling for the Show of the Month details */
+#show-of-the-month-details {
+    padding: 20px;
+    background-color: #20232a;
+    margin: 20px;
+    border-radius: 10px;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#show-of-the-month-details h3 {
+    font-size: 2em;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+#show-of-the-month-details p {
+    font-size: 1.2em;
+    margin-bottom: 10px;
+}
+
+#show-of-the-month-details h4 {
+    font-size: 1.5em;
+    margin-top: 20px;
+}
+
+/* New Styles */
+#details-container {
+    margin-top: 20px;
+    margin-bottom: 40px; /* Ensure it is not cut off by the footer */
+}
+
+.show-details ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.show-details li {
+    margin: 5px 0;
+    display: flex;
+    justify-content: space-between;
+}
+
+.show-details button {
+    padding: 5px 10px;
+    background-color: red;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    color: white;
 }

@@ -5,44 +5,45 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Movie Database</title>
     <link rel="stylesheet" href="styles.css">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="scripts.js" defer></script>
 </head>
 <body>
-    <header id="navbar">
+    <header>
         <nav>
             <ul>
-                <li><a href="#" id="home-btn">Home</a></li>
-                <li><a href="#" id="movies-btn">Movies</a></li>
-                <li><a href="#" id="shows-btn">Shows</a></li>
+                <li><a id="home-btn" href="#">Home</a></li>
+                <li><a id="movies-btn" href="#">Movies</a></li>
+                <li><a id="shows-btn" href="#">Shows</a></li>
+                <li><a id="show-of-the-month-btn" href="#">Show of the Month</a></li>
             </ul>
         </nav>
         <div id="search-container">
             <input type="text" id="search-input" placeholder="Search...">
-            <button id="search-button"><img src="search-icon.png" alt="Search"></button>
+            <button id="search-button">Search</button>
         </div>
     </header>
+
     <main>
-        <section id="featured">
-            <div id="featured-movie">
-                <div class="gradient"></div>
-                <div class="featured-text"></div>
-            </div>
-        </section>
-        <section id="controls">
+        <div id="featured">
+            <div class="gradient"></div>
+            <div class="featured-text"></div>
+        </div>
+        <div id="controls">
             <button id="toggle-view">Toggle View</button>
-        </section>
+        </div>
         <section id="suggested">
             <h2 id="section-title">Trending</h2>
             <div id="suggested-container"></div>
         </section>
-        <section id="person-details" style="display: none;">
-            <h2>Person Details</h2>
+        <div id="person-details">
             <div id="person-info"></div>
-        </section>
+        </div>
     </main>
+
     <footer>
         <p>&copy; 2024 Movie Database</p>
     </footer>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="scripts.js"></script>
 </body>
 </html>
